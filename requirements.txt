@@ -1,8 +1,8 @@
 streamlit
-opencv-contrib-python-headless
-pandas
+opencv-python-headless
+streamlit-webrtc
 numpy
+pandas
 mediapipe
 Pillow
-streamlit-webrtc
 av
