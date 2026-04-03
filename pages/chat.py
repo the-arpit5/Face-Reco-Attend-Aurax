@@ -2,12 +2,12 @@ import streamlit as st
 import pandas as pd
 import os
 import sys
-from utils.style import apply_full_page_theme,apply_custom_sidebar
+from utils.style import apply_full_page_theme,apply_custom_sidebar,add_back_button
 
 st.set_page_config(page_title="Scanner | Aurex Pro", page_icon="icon AA.jpeg", layout="wide")
 apply_full_page_theme()   # Ye purani CSS load karega
 apply_custom_sidebar()    # Ye aapka naya professional sidebar load karega
-
+add_back_button()
 
 # ==========================================
 # --- 🛠️ STEP 1: PATH FIX (MASTER) ---

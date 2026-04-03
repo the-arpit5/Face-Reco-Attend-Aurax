@@ -3,10 +3,10 @@ import os
 import base64
 
 def apply_custom_sidebar():
-    # Logo Path (Ensure karo file name sahi ho)
+    # 1. Logo Path (Ensure file name is correct in your folder)
     logo_path = "icon AAA.jpeg" 
     
-    # Image to Base64 (Sidebar ke liye)
+    # 2. Image to Base64 (Sidebar Branding ke liye)
     logo_base64 = ""
     if os.path.exists(logo_path):
         with open(logo_path, "rb") as img_file:
@@ -28,22 +28,13 @@ def apply_custom_sidebar():
         
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # --- CUSTOM NAVIGATION (Order Fix) ---
+        # --- CUSTOM NAVIGATION (Uniform size for all pages) ---
         st.markdown("<p style='color:#64748b; font-size:12px; font-weight:bold; margin-left:5px;'>MAIN MENU</p>", unsafe_allow_html=True)
         
-        # 1. Dashboard (Main File)
         st.page_link("app.py", label="DASHBOARD", icon="🏠")
-        
-        # 2. Registration
         st.page_link("pages/ragister.py", label="REGISTRATION", icon="👤")
-        
-        # 3. Scan
         st.page_link("pages/scanner.py", label="SCAN FACE", icon="📸")
-        
-        # 4. Records
         st.page_link("pages/record.py", label="RECORDS", icon="📊")
-        
-        # 5. Chat
         st.page_link("pages/chat.py", label=" CHAT", icon="💬")
         
         st.divider()
@@ -65,85 +56,113 @@ def apply_custom_sidebar():
         """, unsafe_allow_html=True)
 
 def apply_full_page_theme():
-    # 1. CSS file path logic
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    css_path = os.path.join(base_dir, "style.css")
+    # Logo for Mobile Corner
+    logo_path = "icon AAA.jpeg" 
+    logo_base_64 = ""
+    if os.path.exists(logo_path):
+        with open(logo_path, "rb") as img_file:
+            logo_base_64 = base64.b64encode(img_file.read()).decode()
 
-    # 2. Load External CSS if exists
-    if os.path.exists(css_path):
-        with open(css_path) as f:
-            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-    
-    # 3. Extra Styles for Navigation and Sidebar Look
-    st.markdown("""
+    # CSS for Sidebar Fix and Mobile Icon
+    st.markdown(f"""
         <style>
-        /* Hide default streamlit navigation since we are using custom page_links */
-        [data-testid="stSidebarNav"] { display: none; }
-        
-        [data-testid="stSidebar"] {
+        /* 1. Sidebar Width Constant (Sabhi pages par same rahega) */
+        [data-testid="stSidebar"] {{
+            min-width: 300px !important;
+            max-width: 300px !important;
             background: linear-gradient(180deg, #0f172a 0%, #000000 100%) !important;
-        }
+        }}
+        
+        [data-testid="stSidebarNav"] {{ display: none; }}
 
-        /* Styling the page links to match your theme */
-        .stPageLink button {
+        /* 2. Mobile Header Logo (Sirf Phone par dikhega) */
+        @media (max-width: 1023px) {{
+            .mobile-top-logo {{
+                position: fixed;
+                top: 10px;
+                right: 55px; 
+                z-index: 999999;
+                border: 1px solid #00d2ff;
+                border-radius: 8px;
+                width: 32px;
+                height: 32px;
+            }}
+        }}
+        @media (min-width: 1024px) {{
+            .mobile-top-logo {{ display: none; }}
+        }}
+
+        /* 3. Navigation Buttons Styling */
+        .stPageLink button {{
             background: rgba(255, 255, 255, 0.03) !important;
             border: 1px solid transparent !important;
             border-radius: 10px !important;
             transition: all 0.3s ease !important;
             padding: 10px !important;
-            margin: 2px 0 !important;
-        }
-
-        .stPageLink button:hover {
+            width: 100% !important;
+        }}
+        .stPageLink button:hover {{
             background: rgba(0, 210, 255, 0.1) !important;
             border: 1px solid rgba(0, 210, 255, 0.4) !important;
             transform: translateX(5px);
-        }
+        }}
         </style>
+        <img class="mobile-top-logo" src="data:image/jpeg;base64,{logo_base_64}">
     """, unsafe_allow_html=True)
-
 
 def apply_record_page_style():
     st.markdown("""
         <style>
-        /* 1. Metric Boxes compact design */
+        /* Common Metric Style */
         div[data-testid="stMetric"] {
             background-color: #0e1117 !important; 
             border: 1px solid #1f2937 !important;
-            padding: 5px 12px !important;
             border-radius: 8px !important;
-            max-width: 160px !important; 
-            margin-bottom: 0px !important;
         }
 
-        /* 2. CRITICAL: Remove Gap between columns and the next element */
-        [data-testid="column"] {
-            width: fit-content !important;
-            flex: unset !important;
-            min-width: 150px !important;
-        }
-        
-        /* 3. Remove all padding from the vertical block that contains metrics */
-        [data-testid="stVerticalBlock"] > div {
-            padding-bottom: 0px !important;
-            margin-bottom: -10px !important; /* Force pull up */
+        /* --- LAPTOP VIEW (Tight Professional Layout) --- */
+        @media (min-width: 1024px) {
+            div[data-testid="stMetric"] {
+                padding: 5px 12px !important;
+                max-width: 160px !important; 
+            }
+            [data-testid="column"] {
+                width: fit-content !important;
+                flex: unset !important;
+                min-width: 150px !important;
+            }
+            [data-testid="stVerticalBlock"] > div {
+                padding-bottom: 0px !important;
+                margin-bottom: -10px !important;
+            }
+            .stTabs {
+                margin-top: -50px !important; 
+            }
+            h1 { margin-bottom: -20px !important; }
         }
 
-        /* 4. Pull Tabs/List significantly UP */
-        .stTabs {
-            margin-top: -50px !important; /* Zyada negative margin taaki chipak jaye */
-            padding-top: 0px !important;
-        }
-
-        /* 5. Metrics text adjustment */
-        [data-testid="stMetricValue"] {
-            font-size: 1.4rem !important;
-            line-height: 1 !important;
-        }
-        
-        /* Heading ka bottom margin kam karna */
-        h1 {
-            margin-bottom: -20px !important;
+        /* --- MOBILE VIEW (Phone optimized) --- */
+        @media (max-width: 1023px) {
+            div[data-testid="stMetric"] {
+                padding: 10px !important;
+                margin-bottom: 5px !important;
+            }
+            [data-testid="column"] {
+                width: 48% !important; /* 2 boxes per row */
+                flex: 1 1 45% !important;
+            }
+            .stTabs { margin-top: 0px !important; }
+            [data-testid="stMetricValue"] {
+                font-size: 1.2rem !important;
+            }
         }
         </style>
     """, unsafe_allow_html=True)
+
+def add_back_button():
+    col1, _ = st.columns([1, 4])
+    with col1:
+        # Ye button har page se Dashboard (app.py) par le jayega
+        if st.page_link("app.py", label="BACK", icon="⬅️"):
+            pass 
+    st.markdown("---")

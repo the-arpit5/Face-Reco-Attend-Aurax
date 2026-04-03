@@ -9,12 +9,13 @@ import time
 
 # Utils se functions import kar rahe hain (aapke code ke according)
 from utils.core import recognize_face, mark_attendance, load_students
-from utils.style import apply_full_page_theme, apply_custom_sidebar
+from utils.style import apply_full_page_theme, apply_custom_sidebar,add_back_button
 
 # --- 1. SETUP ---
 st.set_page_config(page_title="Scanner | Aurex Pro", page_icon="📸", layout="wide")
 apply_full_page_theme()
 apply_custom_sidebar()
+add_back_button()
 
 # Mediapipe configuration for Blink Detection
 mp_face_mesh = mp.solutions.face_mesh
