@@ -3,13 +3,12 @@ import pandas as pd
 import os
 from datetime import datetime
 # Humne apply_record_page_style ko yahan import kiya
-from utils.style import apply_full_page_theme, apply_custom_sidebar, apply_record_page_style, add_back_button
+from utils.style import apply_inner_page_theme, apply_custom_sidebar, add_back_button
 
 # --- 1. CONFIG & STYLE ---
 st.set_page_config(page_title="Records | Aurex Pro", layout="wide", page_icon="📊")
-apply_full_page_theme()
-apply_custom_sidebar()
-apply_record_page_style() # <-- CSS ab yahan se apply hogi, code clean ho gaya
+apply_inner_page_theme()
+apply_custom_sidebar() # <-- CSS ab yahan se apply hogi, code clean ho gaya
 add_back_button()
 
 # --- 2. PATH SETUP ---

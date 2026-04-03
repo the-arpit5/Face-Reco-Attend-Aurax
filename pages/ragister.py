@@ -10,22 +10,16 @@ import mediapipe as mp
 from mediapipe.python.solutions import face_mesh as mp_face_mesh
 from PIL import Image
 from datetime import datetime  # <-- Yeh zaroori hai date/time ke liye
-from utils.style import apply_full_page_theme, apply_custom_sidebar
+from utils.style import apply_inner_page_theme, apply_custom_sidebar
 # --- 1. SETUP & PATHS ---
 st.set_page_config(page_title="Register | Aurex Pro", layout="wide", page_icon="👤")
-apply_full_page_theme()
+apply_inner_page_theme()
 apply_custom_sidebar()
 
 # YAHAN ADD KAREIN
 from utils.style import add_back_button 
 add_back_button() 
 
-# ... baaki ka aapka code ...
-
-# --- 1. SETUP & PATHS ---
-st.set_page_config(page_title="Register | Aurex Pro", layout="wide", page_icon="👤")
-apply_full_page_theme()
-apply_custom_sidebar()
 
 IMAGE_DIR = "TrainingImage"
 STUDENT_DETAILS_CSV = "StudentDetails/StudentDetails.csv"
@@ -197,3 +191,5 @@ with col_input:
                     #st.balloons()
             else:
                 st.error("Not enough photos found. Please capture at least 10 photos.")
+
+st.title("Ragistationpage")
