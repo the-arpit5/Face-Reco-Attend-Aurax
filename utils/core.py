@@ -115,32 +115,47 @@ def recognize_face(face_roi):
         return None
 
 # 5. MARK ATTENDANCE
-def mark_attendance(id, name):
+import pandas as pd
+import os
+from datetime import datetime
+
+def mark_attendance(user_id, name):
+    # 1. Folder check karo
+    if not os.path.exists("Attendance"):
+        os.makedirs("Attendance")
+    
+    # 2. Aaj ki date aur file name fix karo
+    today_date = datetime.now().strftime("%Y-%m-%d")
+    current_time = datetime.now().strftime("%H:%M:%S")
+    attendance_file = os.path.join("Attendance", f"Attendance_{today_date}.csv")
+    
     try:
-        today = datetime.now().strftime("%Y-%m-%d")
-        filename = os.path.join(ATTENDANCE_DIR, f"Attendance_{today}.csv")
-        
-        if os.path.exists(filename):
-            df = pd.read_csv(filename)
+        # 3. Agar file pehle se hai toh load karo, nahi toh naya DataFrame banao
+        if os.path.exists(attendance_file):
+            df = pd.read_csv(attendance_file)
         else:
+            # DHAYAN DEIN: Yahan 'Date' column add karna zaroori hai
             df = pd.DataFrame(columns=['ID', 'Name', 'Date', 'Time'])
-
-        df['ID'] = df['ID'].astype(str)
-        if str(id) in df['ID'].values:
-            return False, f"{name}, already marked for today!"
-
-        new_row = {
-            "ID": str(id), 
-            "Name": name, 
-            "Date": today, 
-            "Time": datetime.now().strftime("%H:%M:%S")
+        
+        # 4. Duplicate check (Ek hi din mein ek student ki baar-baar attendance na lage)
+        if str(user_id) in df['ID'].astype(str).values:
+            return False, f"Attendance already marked for {name}!"
+        
+        # 5. Naya record add karo (Date ke saath)
+        new_data = {
+            'ID': str(user_id), 
+            'Name': name, 
+            'Date': today_date,  # <-- Ye line date save karegi
+            'Time': current_time
         }
-        df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
-        df.to_csv(filename, index=False)
-        return True, f"Success: {name} marked present."
+        
+        df = pd.concat([df, pd.DataFrame([new_data])], ignore_index=True)
+        df.to_csv(attendance_file, index=False)
+        
+        return True, f"Attendance marked for {name} at {current_time}"
+        
     except Exception as e:
-        return False, f"File Error: {str(e)}"
-
+        return False, f"Error: {str(e)}"
 # 6. LOAD STUDENTS
 def load_students():
     if os.path.exists(DATA_FILE):

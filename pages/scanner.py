@@ -86,7 +86,7 @@ class VideoProcessor(VideoProcessorBase):
 
 # --- 3. UI LAYOUT ---
 st.title("📸 AI Biometric Scanner")
-st.markdown("<p style='color:#64748b;'>Aapki attendance tabhi lagegi jab AI aapka chehra pehchanega aur aap <b>Aankhein Jhapakayenge (Blink)</b>.</p>", unsafe_allow_html=True)
+st.markdown("<p style='color:#64748b;'>Attendance is subject to successful AI face recognition <b>Blink Your Eyes (Blink)</b>.</p>", unsafe_allow_html=True)
 
 col_left, col_right = st.columns([2, 1])
 
@@ -118,7 +118,7 @@ with col_right:
             # Clear message after showing
             ctx.video_processor.status_msg = ""
     
-    st.info("💡 **Pro-Tip:** Agar green box aa raha hai lekin attendance nahi lag rahi, toh ek baar apni aankhein band karke kholein.")
+    st.info("💡 **Pro-Tip:** If the green box appears but attendance is not marked, please blink your eyes once.")
 
     # Show mini records
     st.divider()

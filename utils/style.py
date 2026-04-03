@@ -101,3 +101,50 @@ def apply_full_page_theme():
         }
         </style>
     """, unsafe_allow_html=True)
+
+
+
+def apply_record_page_style():
+    st.markdown("""
+        <style>
+        /* 1. Metric Boxes compact design */
+        div[data-testid="stMetric"] {
+            background-color: #0e1117 !important; 
+            border: 1px solid #1f2937 !important;
+            padding: 5px 12px !important;
+            border-radius: 8px !important;
+            max-width: 160px !important; 
+            margin-bottom: 0px !important;
+        }
+
+        /* 2. CRITICAL: Remove Gap between columns and the next element */
+        [data-testid="column"] {
+            width: fit-content !important;
+            flex: unset !important;
+            min-width: 150px !important;
+        }
+        
+        /* 3. Remove all padding from the vertical block that contains metrics */
+        [data-testid="stVerticalBlock"] > div {
+            padding-bottom: 0px !important;
+            margin-bottom: -10px !important; /* Force pull up */
+        }
+
+        /* 4. Pull Tabs/List significantly UP */
+        .stTabs {
+            margin-top: -50px !important; /* Zyada negative margin taaki chipak jaye */
+            padding-top: 0px !important;
+        }
+
+        /* 5. Metrics text adjustment */
+        [data-testid="stMetricValue"] {
+            font-size: 1.4rem !important;
+            line-height: 1 !important;
+        }
+        
+        /* Heading ka bottom margin kam karna */
+        h1 {
+            margin-bottom: -20px !important;
+        }
+        </style>
+    """, unsafe_allow_html=True)

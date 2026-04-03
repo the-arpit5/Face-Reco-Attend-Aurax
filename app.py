@@ -1,6 +1,9 @@
 import streamlit as st
 import base64
 import os
+# Naya Code (Cloud Friendly)
+from mediapipe.python.solutions import face_mesh as mp_face_mesh
+face_mesh = mp_face_mesh.FaceMesh(refine_landmarks=True)
 
 from datetime import datetime
 from utils.style import apply_full_page_theme,apply_custom_sidebar

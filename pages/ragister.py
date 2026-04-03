@@ -7,7 +7,9 @@ import pandas as pd
 import time
 import av
 import mediapipe as mp
+from mediapipe.python.solutions import face_mesh as mp_face_mesh
 from PIL import Image
+from datetime import datetime  # <-- Yeh zaroori hai date/time ke liye
 from utils.style import apply_full_page_theme, apply_custom_sidebar
 
 # --- 1. SETUP & PATHS ---
@@ -17,7 +19,7 @@ apply_custom_sidebar()
 
 IMAGE_DIR = "TrainingImage"
 STUDENT_DETAILS_CSV = "StudentDetails/StudentDetails.csv"
-TRAINER_YML = "TrainingImageLabel/Trainner.yml" # Folder alag rakho confusion se bachne ke liye
+TRAINER_YML = "TrainingImageLabel/Trainner.yml" 
 RTC_CONFIG = RTCConfiguration({"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]})
 
 # Folders check
@@ -70,18 +72,17 @@ class RegistrationProcessor(VideoProcessorBase):
 
             if self.model_loaded:
                 sid, conf = self.recognizer.predict(face_roi)
-                if conf < 55: # Accuracy strict rakhi hai
+                if conf < 55: 
                     self.face_already_exists = True
                     color, label = (0, 0, 255), "🚫 ALREADY REGISTERED"
                 else:
                     self.face_already_exists = False
 
             if self.capture_mode and not self.face_already_exists:
-                if self.sample_count < 20: # 20 samples better hain
+                if self.sample_count < 20: 
                     if is_blinking and (time.time() - self.last_blink_time > 0.4):
                         self.sample_count += 1
                         self.last_blink_time = time.time()
-                        # Filename format fixed
                         img_path = f"{IMAGE_DIR}/{self.reg_name}.{self.reg_id}.{self.sample_count}.jpg"
                         cv2.imwrite(img_path, face_roi)
                     label = f"Capturing: {self.sample_count}/20"
@@ -137,15 +138,13 @@ with col_input:
         else:
             st.error("Please provide valid Numeric ID and Name.")
 
-    # --- SOLID FINALIZE LOGIC ---
+    # --- SOLID FINALIZE LOGIC (Sahi Wala) ---
     if st.button("✅ FINALIZE & LOCK", use_container_width=True):
         if not rid or not rname:
             st.error("ID and Name missing!")
         elif is_face_known:
             st.error("Face already exists!")
         else:
-            # 1. Collect all images for ALL users (Not just current one)
-            # Kyunki train hamesha poore dataset par karna chahiye
             faces, ids = [], []
             if os.path.exists(IMAGE_DIR):
                 for f in os.listdir(IMAGE_DIR):
@@ -162,17 +161,29 @@ with col_input:
             if len(faces) >= 10:
                 with st.spinner("AI is creating security vault..."):
                     rec = cv2.face.LBPHFaceRecognizer_create()
-                    # Zaroori: .train() use karein taaki nayi file bane
                     rec.train(faces, np.array(ids))
                     rec.save(TRAINER_YML)
                     
-                    # Update CSV
-                    df = pd.read_csv(STUDENT_DETAILS_CSV) if os.path.exists(STUDENT_DETAILS_CSV) else pd.DataFrame(columns=['ID', 'Name'])
-                    new_row = pd.DataFrame([[rid, rname]], columns=['ID', 'Name'])
-                    df = pd.concat([df, new_row]).drop_duplicates(subset=['ID'])
+                    # --- FIXED: Get Current Date and Time ---
+                    reg_date = datetime.now().strftime("%Y-%m-%d")
+                    reg_time = datetime.now().strftime("%H:%M:%S")
+                    
+                    # Columns List
+                    cols = ['ID', 'Name', 'Date', 'Time']
+                    
+                    if os.path.exists(STUDENT_DETAILS_CSV):
+                        df = pd.read_csv(STUDENT_DETAILS_CSV)
+                    else:
+                        df = pd.DataFrame(columns=cols)
+                    
+                    # Naya record with all 4 values
+                    new_row = pd.DataFrame([[rid, rname, reg_date, reg_time]], columns=cols)
+                    
+                    # Combine, remove duplicates based on ID
+                    df = pd.concat([df, new_row], ignore_index=True).drop_duplicates(subset=['ID'], keep='last')
                     df.to_csv(STUDENT_DETAILS_CSV, index=False)
                     
-                    st.success(f"🎉 Success! {rname} Registered and .yml Created!")
-                    # st.balloons()
+                    st.success(f"🎉 Success! {rname} Registered with Date/Time!")
+                    #st.balloons()
             else:
                 st.error("Not enough photos found. Please capture at least 10 photos.")

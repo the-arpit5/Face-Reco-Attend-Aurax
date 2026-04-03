@@ -1,75 +1,88 @@
 import streamlit as st
 import pandas as pd
 import os
-import sys
 from datetime import datetime
+# Humne apply_record_page_style ko yahan import kiya
+from utils.style import apply_full_page_theme, apply_custom_sidebar, apply_record_page_style
 
-# Root directory setup
-sys.path.append(os.getcwd()) 
-
-from utils.core import load_students
-from utils.style import apply_full_page_theme, apply_custom_sidebar
-
-# --- 1. PAGE CONFIG ---
-st.set_page_config(page_title="Records | Aurex Pro", page_icon="", layout="wide")
+# --- 1. CONFIG & STYLE ---
+st.set_page_config(page_title="Records | Aurex Pro", layout="wide", page_icon="📊")
 apply_full_page_theme()
 apply_custom_sidebar()
+apply_record_page_style() # <-- CSS ab yahan se apply hogi, code clean ho gaya
 
-# --- 2. DATA LOADING ---
-df_students = load_students()
+# --- 2. PATH SETUP ---
+STUDENT_DETAILS_CSV = "StudentDetails/StudentDetails.csv"
 today_date = datetime.now().strftime("%Y-%m-%d")
 attendance_file = os.path.join("Attendance", f"Attendance_{today_date}.csv")
 
-if os.path.exists(attendance_file):
-    try:
-        df_att = pd.read_csv(attendance_file)
-        if not df_att.empty:
-            df_att['ID'] = df_att['ID'].astype(str).str.replace('.0', '', regex=False)
-    except:
-        df_att = pd.DataFrame(columns=['ID', 'Name', 'Date', 'Time'])
-else:
-    df_att = pd.DataFrame(columns=['ID', 'Name', 'Date', 'Time'])
+# --- 3. DATA LOADING (No Changes in Logic) ---
+df_students = pd.read_csv(STUDENT_DETAILS_CSV) if os.path.exists(STUDENT_DETAILS_CSV) else pd.DataFrame()
+df_attendance = pd.read_csv(attendance_file) if os.path.exists(attendance_file) else pd.DataFrame()
 
-# --- 3. UI LAYOUT ---
+# Cleanup IDs taaki string mismatch na ho
+for df in [df_students, df_attendance]:
+    if not df.empty and 'ID' in df.columns:
+        df['ID'] = df['ID'].astype(str)
+
+# --- 4. UI HEADER ---
 st.title("📊 Records Dashboard")
-st.markdown("---")
-
-# Metrics
-m1, m2, m3 = st.columns(3)
-m1.metric("Total Registered", len(df_students))
-m2.metric("Today's Presence", len(df_att))
-m3.metric("System Status", "Operational", delta="Online")
-
-st.write("##")
-
-col_left, col_right = st.columns([1, 1.2])
-
-with col_left:
-    st.subheader("📋 Registered Students")
-    if not df_students.empty:
-        df_disp = df_students.copy()
-        df_disp['ID'] = df_disp['ID'].astype(str)
-        st.dataframe(df_disp, use_container_width=True, hide_index=True)
-    else:
-        st.info("No students registered yet.")
-
-with col_right:
-    st.subheader("📝 Today's Attendance")
-    
-    if not df_att.empty:
-        # 1. Pehle Table dikhayega
-        st.dataframe(
-            df_att[['ID', 'Name', 'Time']], 
-            use_container_width=True, 
-            hide_index=True
-        )
-        
-        # 2. AB GREEN BOX NICHE AAYEGA (Requirement Fixed)
-        st.success(f"✅ Logs for: **{today_date}**")
-    else:
-        st.warning(f"⚠️ No attendance records found for {today_date}.")
-
-# --- 4. FOOTER ---
+st.caption(f"System Operational • Logged in as Admin • {datetime.now().strftime('%A, %d %B %Y')}")
 st.divider()
-if st.button("🔄 Sync & Refresh Records", use_container_width=True):
+
+# --- 5. METRICS SECTION ---
+m1, m2, m3 = st.columns(3)
+with m1:
+    st.metric("Total Registered", len(df_students))
+with m2:
+    st.metric("Today's Presence", len(df_attendance))
+
+st.write("##") 
+
+# --- 6. TABLES SECTION (Tabs for Professional Look) ---
+tab1, tab2 = st.tabs(["📋 Registered Students", "📝 Today's Logs"])
+
+with tab1:
+    if not df_students.empty:
+        st.dataframe(
+            df_students, 
+            use_container_width=True, 
+            hide_index=True,
+            column_config={
+                "ID": st.column_config.TextColumn("Student ID"),
+                "Name": st.column_config.TextColumn("Full Name"),
+                "Date": st.column_config.DateColumn("Reg. Date"),
+                "Time": st.column_config.TimeColumn("Reg. Time")
+            }
+        )
+    else:
+        st.info("No students found in the database.")
+
+with tab2:
+    if not df_attendance.empty:
+        st.success(f"Showing attendance for today: {today_date}")
+        st.dataframe(
+            df_attendance, 
+            use_container_width=True, 
+            hide_index=True,
+            column_config={
+                "ID": st.column_config.TextColumn("ID"),
+                "Name": st.column_config.TextColumn("Student Name"),
+                "Date": st.column_config.DateColumn("Date"),
+                "Time": st.column_config.TimeColumn("Check-in Time")
+            }
+        )
+    else:
+        st.warning("No attendance records found for today.")
+
+# --- 7. FOOTER ACTIONS ---
+st.divider()
+c1, c2, _ = st.columns([1,1,2])
+if c1.button("🔄 Refresh Data"):
     st.rerun()
+
+if c2.button("📥 Export Today's CSV"):
+    if not df_attendance.empty:
+        export_path = f"Attendance_Export_{today_date}.csv"
+        df_attendance.to_csv(export_path, index=False)
+        st.toast(f"File saved: {export_path}")
