@@ -103,7 +103,6 @@ def apply_full_page_theme():
     """, unsafe_allow_html=True)
 
 
-
 def apply_record_page_style():
     st.markdown("""
         <style>
