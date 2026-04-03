@@ -3,6 +3,6 @@ opencv-python-headless
 streamlit-webrtc
 numpy
 pandas
-mediapipe
+mediapipe==0.10.11
 Pillow
 av
