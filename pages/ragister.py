@@ -7,7 +7,6 @@ import pandas as pd
 import time
 import av
 import mediapipe as mp
-from mediapipe.python.solutions import face_mesh as mp_face_mesh
 from PIL import Image
 from utils.style import apply_full_page_theme, apply_custom_sidebar
 
