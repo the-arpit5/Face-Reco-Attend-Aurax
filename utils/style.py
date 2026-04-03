@@ -3,10 +3,10 @@ import os
 import base64
 
 def apply_custom_sidebar():
-    # 1. Logo Path (Ensure file name is correct in your folder)
+    # 1. Logo Path
     logo_path = "icon AAA.jpeg" 
     
-    # 2. Image to Base64 (Sidebar Branding ke liye)
+    # 2. Image to Base64
     logo_base64 = ""
     if os.path.exists(logo_path):
         with open(logo_path, "rb") as img_file:
@@ -28,9 +28,10 @@ def apply_custom_sidebar():
         
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # --- CUSTOM NAVIGATION (Uniform size for all pages) ---
+        # --- CUSTOM NAVIGATION ---
         st.markdown("<p style='color:#64748b; font-size:12px; font-weight:bold; margin-left:5px;'>MAIN MENU</p>", unsafe_allow_html=True)
         
+        # Navigation Links (Ensure paths are correct)
         st.page_link("app.py", label="DASHBOARD", icon="🏠")
         st.page_link("pages/ragister.py", label="REGISTRATION", icon="👤")
         st.page_link("pages/scanner.py", label="SCAN FACE", icon="📸")
@@ -56,49 +57,29 @@ def apply_custom_sidebar():
         """, unsafe_allow_html=True)
 
 def apply_full_page_theme():
-    # Logo for Mobile Corner
-    logo_path = "icon AAA.jpeg" 
-    logo_base_64 = ""
-    if os.path.exists(logo_path):
-        with open(logo_path, "rb") as img_file:
-            logo_base_64 = base64.b64encode(img_file.read()).decode()
-
-    # CSS for Sidebar Fix and Mobile Icon
+    # CSS for Sidebar Fix and Custom UI
     st.markdown(f"""
         <style>
-        /* 1. Sidebar Width Constant (Sabhi pages par same rahega) */
+        /* Sidebar container ko hamesha dikhane ke liye */
         [data-testid="stSidebar"] {{
             min-width: 300px !important;
             max-width: 300px !important;
             background: linear-gradient(180deg, #0f172a 0%, #000000 100%) !important;
+            visibility: visible !important;
         }}
         
-        [data-testid="stSidebarNav"] {{ display: none; }}
-
-        /* 2. Mobile Header Logo (Sirf Phone par dikhega) */
-        @media (max-width: 1023px) {{
-            .mobile-top-logo {{
-                position: fixed;
-                top: 10px;
-                right: 55px; 
-                z-index: 999999;
-                border: 1px solid #00d2ff;
-                border-radius: 8px;
-                width: 32px;
-                height: 32px;
-            }}
-        }}
-        @media (min-width: 1024px) {{
-            .mobile-top-logo {{ display: none; }}
+        /* Default Navigation hide karein lekin container nahi */
+        [data-testid="stSidebarNav"] {{
+            display: none !important;
         }}
 
-        /* 3. Navigation Buttons Styling */
+        /* Navigation Buttons Styling */
         .stPageLink button {{
             background: rgba(255, 255, 255, 0.03) !important;
             border: 1px solid transparent !important;
             border-radius: 10px !important;
             transition: all 0.3s ease !important;
-            padding: 10px !important;
+            padding: 8px !important;
             width: 100% !important;
         }}
         .stPageLink button:hover {{
@@ -106,55 +87,20 @@ def apply_full_page_theme():
             border: 1px solid rgba(0, 210, 255, 0.4) !important;
             transform: translateX(5px);
         }}
+
+        /* Hide Top Streamlit Header */
+        header {{ visibility: hidden; }}
         </style>
-        <img class="mobile-top-logo" src="data:image/jpeg;base64,{logo_base_64}">
     """, unsafe_allow_html=True)
 
 def apply_record_page_style():
     st.markdown("""
         <style>
-        /* Common Metric Style */
         div[data-testid="stMetric"] {
             background-color: #0e1117 !important; 
             border: 1px solid #1f2937 !important;
             border-radius: 8px !important;
-        }
-
-        /* --- LAPTOP VIEW (Tight Professional Layout) --- */
-        @media (min-width: 1024px) {
-            div[data-testid="stMetric"] {
-                padding: 5px 12px !important;
-                max-width: 160px !important; 
-            }
-            [data-testid="column"] {
-                width: fit-content !important;
-                flex: unset !important;
-                min-width: 150px !important;
-            }
-            [data-testid="stVerticalBlock"] > div {
-                padding-bottom: 0px !important;
-                margin-bottom: -10px !important;
-            }
-            .stTabs {
-                margin-top: -50px !important; 
-            }
-            h1 { margin-bottom: -20px !important; }
-        }
-
-        /* --- MOBILE VIEW (Phone optimized) --- */
-        @media (max-width: 1023px) {
-            div[data-testid="stMetric"] {
-                padding: 10px !important;
-                margin-bottom: 5px !important;
-            }
-            [data-testid="column"] {
-                width: 48% !important; /* 2 boxes per row */
-                flex: 1 1 45% !important;
-            }
-            .stTabs { margin-top: 0px !important; }
-            [data-testid="stMetricValue"] {
-                font-size: 1.2rem !important;
-            }
+            padding: 10px !important;
         }
         </style>
     """, unsafe_allow_html=True)
@@ -162,7 +108,5 @@ def apply_record_page_style():
 def add_back_button():
     col1, _ = st.columns([1, 4])
     with col1:
-        # Ye button har page se Dashboard (app.py) par le jayega
-        if st.page_link("app.py", label="BACK", icon="⬅️"):
-            pass 
+        st.page_link("app.py", label="BACK", icon="⬅️")
     st.markdown("---")
