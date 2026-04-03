@@ -3,6 +3,6 @@ opencv-contrib-python-headless
 pandas
 numpy
 mediapipe
-pillow
+Pillow
 streamlit-webrtc
 av
