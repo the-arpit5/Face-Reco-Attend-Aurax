@@ -2,7 +2,7 @@ streamlit
 opencv-contrib-python-headless
 pandas
 numpy
-Mediapipe
-Pillow
+mediapipe
+pillow
 streamlit-webrtc
 av
