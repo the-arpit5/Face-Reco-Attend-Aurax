@@ -1,7 +1,7 @@
 import streamlit as st
 import base64
 import os
-
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 # Naya Code (Cloud Friendly)
 from mediapipe.python.solutions import face_mesh as mp_face_mesh
 face_mesh = mp_face_mesh.FaceMesh(refine_landmarks=True)
