@@ -163,7 +163,7 @@ def draw_card(column, title, icon, style, key, path):
             st.switch_page(path)
 
 draw_card(col1, "SCANNER", "📸", "card-scanner", "btn_scan", "pages/scanner.py")
-draw_card(col2, "REGISTER", "👤", "card-register", "btn_reg", "pages/ragister.py")
+draw_card(col2, "REGISTER", "👤", "card-register", "btn_reg", "pages/register.py")
 draw_card(col3, "CHAT", "💬", "card-chat", "btn_chat", "pages/chat.py")
 draw_card(col4, "RECORDS", "📊", "card-records", "btn_rec", "pages/record.py")
 
