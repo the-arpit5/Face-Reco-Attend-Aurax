@@ -8,18 +8,15 @@ face_mesh = mp_face_mesh.FaceMesh(refine_landmarks=True)
 from datetime import datetime
 from utils.style import apply_full_page_theme,apply_custom_sidebar
 
-st.set_page_config(page_title="Scanner | Aurex Pro", page_icon="icon AAA.jpeg", layout="wide")
-apply_full_page_theme()   # Ye purani CSS load karega
-apply_custom_sidebar()    # Ye aapka naya professional sidebar load karega
-
-
-# 1. Page Config
 # 1. Page Config (Favicon set karne ke liye page_icon mein image ka path ya URL dein)
 st.set_page_config(
     page_title="Aurex Attend Pro", 
     page_icon="icon AAA.jpeg",  # Yahan aapki photo ka path aayega
     layout="wide"
 )
+
+apply_full_page_theme()   # Ye purani CSS load karega
+apply_custom_sidebar()    # Ye aapka naya professional sidebar load karega
 
 # --- IMAGE TO BASE64 HELPER ---
 def get_base64_image(image_path):
