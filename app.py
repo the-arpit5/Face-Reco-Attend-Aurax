@@ -1,9 +1,6 @@
 import streamlit as st
 import base64
 import os
-import sys
-
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 # Naya Code (Cloud Friendly)
 from mediapipe.python.solutions import face_mesh as mp_face_mesh
 face_mesh = mp_face_mesh.FaceMesh(refine_landmarks=True)
@@ -11,6 +8,12 @@ face_mesh = mp_face_mesh.FaceMesh(refine_landmarks=True)
 from datetime import datetime
 from utils.style import apply_full_page_theme,apply_custom_sidebar
 
+st.set_page_config(page_title="Scanner | Aurex Pro", page_icon="icon AAA.jpeg", layout="wide")
+apply_full_page_theme()   # Ye purani CSS load karega
+apply_custom_sidebar()    # Ye aapka naya professional sidebar load karega
+
+
+# 1. Page Config
 # 1. Page Config (Favicon set karne ke liye page_icon mein image ka path ya URL dein)
 st.set_page_config(
     page_title="Aurex Attend Pro", 
@@ -20,6 +23,7 @@ st.set_page_config(
 
 apply_full_page_theme()   # Ye purani CSS load karega
 apply_custom_sidebar()    # Ye aapka naya professional sidebar load karega
+
 
 # --- IMAGE TO BASE64 HELPER ---
 def get_base64_image(image_path):
@@ -163,7 +167,7 @@ def draw_card(column, title, icon, style, key, path):
             st.switch_page(path)
 
 draw_card(col1, "SCANNER", "📸", "card-scanner", "btn_scan", "pages/scanner.py")
-draw_card(col2, "REGISTER", "👤", "card-register", "btn_reg", "pages/register.py")
+draw_card(col2, "REGISTER", "👤", "card-register", "btn_reg", "pages/ragister.py")
 draw_card(col3, "CHAT", "💬", "card-chat", "btn_chat", "pages/chat.py")
 draw_card(col4, "RECORDS", "📊", "card-records", "btn_rec", "pages/record.py")
 
